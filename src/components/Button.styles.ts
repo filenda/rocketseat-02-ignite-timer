@@ -16,12 +16,17 @@ const buttonVariants = {
 export const ButtonContainer = styled.button<ButtonContainerProps>`
   width: 100px;
   height: 40px;
+  border-radius: 4px;
+  border: 0;
+  margin: 8px;
+  background-color: ${(props) => props.theme.primary};
+  color: ${(props) => props.theme.white};
 
   /* TALK: This portion of the code will literally be executed as a function because it lies inside a template string */
-  ${(props) => {
+  /* ${(props) => {
     // TALK: This tiny 'css' fella just helps us with syntax highlighting
     return css`
       background-color: ${buttonVariants[props.variant]};
     `;
-  }}
+  }} */
 `;
