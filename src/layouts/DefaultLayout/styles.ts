@@ -7,4 +7,11 @@ export const LayoutContainer = styled.div`
   height: calc(100vh - 10rem);
   /* TALK: 5 rem is exactly half the size of 10 rem (bottom and top), and 'auto' to make the content centered horizontally (left and right) */
   margin: 5rem auto;
+  padding: 2.5rem;
+
+  background: ${(props) => props.theme['gray-800']};
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
 `
