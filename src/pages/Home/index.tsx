@@ -1,5 +1,16 @@
 import { Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+// TALK: Because this (below) is how zod exports its content, that is, without an export default,
+// you have to impoprt it using * too and giving it a custom name
+/**
+
+export * from "./lib";
+export as namespace Zod;
+
+ */
+import * as zod from 'zod'
+
 import {
   CountdownContainer,
   FormContainer,
@@ -10,6 +21,18 @@ import {
   TaskInput,
 } from './styles'
 
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .max(60, 'O ciclo precisa ser de no máximo 60 minutos.'),
+})
+
+// TALK: This extracts the form object types and names from the zod validation schema so
+// you don't have to create an interface on your own: GENIUS!
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
 export function Home() {
   // TALK: 'register' is a function that returns many methods, like:
   /**
@@ -17,12 +40,19 @@ export function Home() {
    * onBlur: () => void,
    * onFocus: () => void
    */
-  const { register, handleSubmit, watch } = useForm()
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+    resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
+  })
 
-  const handleCreateNewCycle = (data) => {
+  const handleCreateNewCycle = (data: NewCycleFormData) => {
     console.log(data)
   }
 
+  // TALK: Using watch from react hook form for the 'task' field, makes it a react controlled input
   const task = watch('task')
   const isSubmitDisabled = !task
 
@@ -53,8 +83,8 @@ export function Home() {
             placeholder="00"
             id="minutesAmount"
             step={5}
-            min={5}
-            max={60}
+            // min={5}
+            // max={60}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
           <span>minutos.</span>
