@@ -20,7 +20,16 @@ export function Home() {
             type="text"
             name=""
             id="task"
+            list="task-suggestion"
           />
+
+          {/* TALK: This is a native html5 element that can serve as a database of list of options for inputs */}
+          <datalist id="task-suggestion">
+            <option value="Projeto 1"></option>
+            <option value="Projeto 2"></option>
+            <option value="Projeto 3"></option>
+            <option value="Banana"></option>
+          </datalist>
 
           <label htmlFor="">durante</label>
           <MinutesAmountInput
@@ -28,6 +37,9 @@ export function Home() {
             placeholder="00"
             name=""
             id="minutesAmount"
+            step={5}
+            min={5}
+            max={60}
           />
           <span>minutos.</span>
         </FormContainer>

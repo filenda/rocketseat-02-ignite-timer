@@ -58,6 +58,11 @@ export const TaskInput = styled(BaseInput)`
   // flex-shrink to allow my coponent to shirnk/lessen it's size dynamically if necessary, and flex-basis to
   // to make the element take up as much space as it already would normally
   flex: 1;
+
+  //TALK: This removes the tiny arrow that appears at the end of te text input field
+  &::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
 `
 
 export const MinutesAmountInput = styled(BaseInput)`
