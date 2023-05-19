@@ -40,7 +40,7 @@ export function Home() {
    * onBlur: () => void,
    * onFocus: () => void
    */
-  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
       task: '',
@@ -50,6 +50,7 @@ export function Home() {
 
   const handleCreateNewCycle = (data: NewCycleFormData) => {
     console.log(data)
+    reset()
   }
 
   // TALK: Using watch from react hook form for the 'task' field, makes it a react controlled input
