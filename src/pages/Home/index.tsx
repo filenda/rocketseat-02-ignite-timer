@@ -65,12 +65,20 @@ export function Home() {
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   useEffect(() => {
+    let interval: number
+
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setAmountOfSecondsPassed(
           differenceInSeconds(new Date(), activeCycle.startDate),
         )
       }, 1000)
+    }
+
+    // TALK: This return function inside the useEffect hook server as a cleanup function, otherwise, in this case
+    // would be always recreated
+    return () => {
+      clearInterval(interval)
     }
   }, [activeCycle])
 
@@ -88,6 +96,7 @@ export function Home() {
     // needs the previous value of the same state being updated
     setCycles((state) => [...state, newCycle])
     setActiveCycleId(id)
+    setAmountOfSecondsPassed(0)
 
     reset()
   }
@@ -100,6 +109,12 @@ export function Home() {
 
   const minutes = String(minutesAmount).padStart(2, '0')
   const seconds = String(secondsAmount).padStart(2, '0')
+
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [minutes, seconds, activeCycle])
 
   // TALK: Using watch from react hook form for the 'task' field, makes it a react controlled input
   const task = watch('task')
