@@ -61,45 +61,12 @@ export function Home() {
     },
   })
 
-  const { handleSubmit, watch /* reset */ } = newCycleForm
+  const { handleSubmit, watch, reset } = newCycleForm
 
-  // const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
-
-  // useEffect(() => {
-  //   let interval: number
-
-  //   if (activeCycle) {
-  //     interval = setInterval(() => {
-  //       const secondsDifference = differenceInSeconds(
-  //         new Date(),
-  //         activeCycle.startDate,
-  //       )
-
-  //       if (secondsDifference >= totalSeconds) {
-  //         setCycles((state) =>
-  //           state.map((cycle) => {
-  //             if (cycle.id === activeCycleId) {
-  //               return { ...cycle, finishedDate: new Date() }
-  //             } else {
-  //               return cycle
-  //             }
-  //           }),
-  //         )
-
-  //         setAmountOfSecondsPassed(totalSeconds)
-  //         clearInterval(interval)
-  //       } else {
-  //         setAmountOfSecondsPassed(secondsDifference)
-  //       }
-  //     }, 1000)
-  //   }
-
-  //   // TALK: This return function inside the useEffect hook serves as a cleanup function, otherwise, in this case,
-  //   // the interval would be always recreated adeternum
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, [activeCycle, totalSeconds, activeCycleId])
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    createNewCycle(data)
+    reset()
+  }
 
   // TALK: Using watch from react hook form for the 'task' field, makes it a react controlled input
   const task = watch('task')
@@ -107,7 +74,7 @@ export function Home() {
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(createNewCycle)} action="">
+      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
         {/* TALK: This 'FormProvider' is a context natively offered by react-hook-form lib */}
         <FormProvider {...newCycleForm}>
           <NewCycleForm />
