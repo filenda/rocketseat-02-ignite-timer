@@ -21,7 +21,10 @@ export function Countdown() {
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),
-          activeCycle.startDate,
+          // TALK: This is a workaround for activeCycle.startDate property because it is being stored as string in the browser
+          // localStorate and thus need to be converted back to a date type. In case activeCycle.startDate input param is already
+          // a date type, it won't do anything
+          new Date(activeCycle.startDate),
         )
 
         if (secondsDifference >= totalSeconds) {

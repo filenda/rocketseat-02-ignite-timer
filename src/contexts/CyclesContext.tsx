@@ -1,10 +1,17 @@
-import { ReactNode, createContext, useState, useReducer } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useState,
+  useReducer,
+  useEffect,
+} from 'react'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 import {
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
 } from '../reducers/cycles/actions'
+import { differenceInSeconds } from 'date-fns'
 
 interface CreacteCycleData {
   task: string
@@ -32,18 +39,51 @@ export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
   // const [cycles, setCycles] = useState<Cycle[]>([])
-  const [cyclesState, dispatch] = useReducer(cyclesReducer, {
-    cycles: [],
-    activeCycleId: null,
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducer,
+    // TALK: This second argument is the initial state
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+    // TALK: This third parameter of the useReducer hook is a function that returns the initial value of the reducer/state
+    (initialState) => {
+      const storedStateAsJSON = localStorage.getItem(
+        '@ignite-timer:cycles-state-1.0.0',
+      )
+
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+
+      return initialState
+    },
+  )
+  const { cycles, activeCycleId } = cyclesState
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const [amountOfSecondsPassed, setAmountOfSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(
+        new Date(),
+        // TALK: This is a workaround for activeCycle.startDate property because it is being stored as string in the browser
+        // localStorate and thus need to be converted back to a date type. In case activeCycle.startDate input param is already
+        // a date type, it won't do anything
+        new Date(activeCycle.startDate),
+      )
+    }
+
+    return 0
   })
 
-  const [amountOfSecondsPassed, setAmountOfSecondsPassed] = useState(0)
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
 
-  const { cycles, activeCycleId } = cyclesState
+    // TALK: This is a best practice, to put the name of the application plus its version in the localstorage index name
+    localStorage.setItem('@ignite-timer:cycles-state-1.0.0', stateJSON)
+  }, [cyclesState])
 
   // const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
-
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
   function setSecondsPassed(seconds: number) {
     setAmountOfSecondsPassed(seconds)
